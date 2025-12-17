@@ -1,0 +1,109 @@
+openapi: 3.0.3
+info:
+  title: Missing RequestParam Annotation Example.
+  version: 1.0.0
+paths:
+  # Missing the @RequestParam annotation.
+  /rest/custom-version-search:
+    get:
+      tags:
+        - missing-annotation-example
+      summary: Get the object in the given version.
+      operationId: findObjectByCustomVersion
+      parameters:
+        - name: version
+          in: query
+          description: Version to search.
+          required: true
+          schema:
+            $ref: '#/components/schemas/SemanticVersion'
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyObject'
+        '404':
+          description: There is no object with that version.
+  # Has the @RequestParam annotation to using an Enum.
+  /rest/fixed-version-search:
+    get:
+      tags:
+        - missing-annotation-example
+      summary: Get the object in the given version.
+      operationId: findObjectByFixedVersion
+      parameters:
+        - name: version
+          in: query
+          description: Version to search.
+          required: true
+          schema:
+            $ref: '#/components/schemas/FixedVersion'
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyObject'
+        '404':
+          description: There is no object with that version.
+  # Has the @RequestParam annotation due to using an Array.
+  /rest/custom-versions-search:
+    get:
+      tags:
+        - missing-annotation-example
+      summary: Get the object with that given versions.
+      operationId: findObjectByCustomVersions
+      parameters:
+        - name: versions
+          in: query
+          description: Versions to search.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SemanticVersion'
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyObject'
+        '404':
+          description: There is no object with that version.
+components:
+  schemas:
+    SemanticVersion:
+      type: object
+      discriminator:
+        propertyName: objectType
+      required:
+        - major
+        - minor
+        - patch
+      properties:
+        major:
+          type: integer
+        minor:
+          type: integer
+        patch:
+          type: integer
+    FixedVersion:
+      type: string
+      description: Fixed version.
+      enum:
+        - "1.0.0"
+        - "2.0.0"
+    MyObject:
+      type: object
+      description: My Object.
+      properties:
+        title:
+          type: string
+          description: Title.
+        description:
+          type: string
+          description: Description.

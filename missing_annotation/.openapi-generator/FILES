@@ -1,0 +1,5 @@
+src/generated/java/tk/dmanstrator/openapi/missing_annotation/api/ApiUtil.java
+src/generated/java/tk/dmanstrator/openapi/missing_annotation/api/MissingAnnotationExampleApi.java
+src/generated/java/tk/dmanstrator/openapi/missing_annotation/model/FixedVersion.java
+src/generated/java/tk/dmanstrator/openapi/missing_annotation/model/MyObject.java
+src/generated/java/tk/dmanstrator/openapi/missing_annotation/model/SemanticVersion.java
