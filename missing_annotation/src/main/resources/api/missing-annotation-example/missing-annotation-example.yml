@@ -4,12 +4,12 @@ info:
   version: 1.0.0
 paths:
   # Missing the @RequestParam annotation.
-  /rest/custom-version-search:
+  /rest/query-custom-version-search:
     get:
       tags:
         - missing-annotation-example
       summary: Get the object in the given version.
-      operationId: findObjectByCustomVersion
+      operationId: findObjectByCustomVersionInQuery
       parameters:
         - name: version
           in: query
@@ -65,6 +65,29 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/SemanticVersion'
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyObject'
+        '404':
+          description: There is no object with that version.
+  # Has the @RequestParam annotation due to using a PathVariable.
+  /rest/path-custom-version-search/{version}:
+    get:
+      tags:
+        - missing-annotation-example
+      summary: Get the object in the given version.
+      operationId: findObjectByCustomVersionInPath
+      parameters:
+        - name: version
+          in: path
+          description: Version to search.
+          required: true
+          schema:
+            $ref: '#/components/schemas/SemanticVersion'
       responses:
         '200':
           description: Successful operation.

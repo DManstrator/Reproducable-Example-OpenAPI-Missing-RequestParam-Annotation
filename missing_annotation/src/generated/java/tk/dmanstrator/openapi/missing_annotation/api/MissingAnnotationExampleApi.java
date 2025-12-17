@@ -44,16 +44,16 @@ public interface MissingAnnotationExampleApi {
         return Optional.empty();
     }
 
-    String PATH_FIND_OBJECT_BY_CUSTOM_VERSION = "/rest/custom-version-search";
+    String PATH_FIND_OBJECT_BY_CUSTOM_VERSION_IN_PATH = "/rest/path-custom-version-search/{version}";
     /**
-     * GET /rest/custom-version-search : Get the object in the given version.
+     * GET /rest/path-custom-version-search/{version} : Get the object in the given version.
      *
      * @param version Version to search. (required)
      * @return Successful operation. (status code 200)
      *         or There is no object with that version. (status code 404)
      */
     @Operation(
-        operationId = "findObjectByCustomVersion",
+        operationId = "findObjectByCustomVersionInPath",
         summary = "Get the object in the given version.",
         tags = { "missing-annotation-example" },
         responses = {
@@ -65,17 +65,63 @@ public interface MissingAnnotationExampleApi {
     )
     @RequestMapping(
         method = RequestMethod.GET,
-        value = MissingAnnotationExampleApi.PATH_FIND_OBJECT_BY_CUSTOM_VERSION,
+        value = MissingAnnotationExampleApi.PATH_FIND_OBJECT_BY_CUSTOM_VERSION_IN_PATH,
         produces = { "application/json" }
     )
-    default ResponseEntity<MyObject> _findObjectByCustomVersion(
-        @NotNull @Parameter(name = "version", description = "Version to search.", required = true, in = ParameterIn.QUERY) @Valid SemanticVersion version
+    default ResponseEntity<MyObject> _findObjectByCustomVersionInPath(
+        @NotNull @Parameter(name = "version", description = "Version to search.", required = true, in = ParameterIn.PATH) @PathVariable("version") SemanticVersion version
     ) {
-        return findObjectByCustomVersion(version);
+        return findObjectByCustomVersionInPath(version);
     }
 
     // Override this method
-    default  ResponseEntity<MyObject> findObjectByCustomVersion(SemanticVersion version) {
+    default  ResponseEntity<MyObject> findObjectByCustomVersionInPath(SemanticVersion version) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"description\" : \"description\", \"title\" : \"title\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    String PATH_FIND_OBJECT_BY_CUSTOM_VERSION_IN_QUERY = "/rest/query-custom-version-search";
+    /**
+     * GET /rest/query-custom-version-search : Get the object in the given version.
+     *
+     * @param version Version to search. (required)
+     * @return Successful operation. (status code 200)
+     *         or There is no object with that version. (status code 404)
+     */
+    @Operation(
+        operationId = "findObjectByCustomVersionInQuery",
+        summary = "Get the object in the given version.",
+        tags = { "missing-annotation-example" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Successful operation.", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = MyObject.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "There is no object with that version.")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = MissingAnnotationExampleApi.PATH_FIND_OBJECT_BY_CUSTOM_VERSION_IN_QUERY,
+        produces = { "application/json" }
+    )
+    default ResponseEntity<MyObject> _findObjectByCustomVersionInQuery(
+        @NotNull @Parameter(name = "version", description = "Version to search.", required = true, in = ParameterIn.QUERY) @Valid SemanticVersion version
+    ) {
+        return findObjectByCustomVersionInQuery(version);
+    }
+
+    // Override this method
+    default  ResponseEntity<MyObject> findObjectByCustomVersionInQuery(SemanticVersion version) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {

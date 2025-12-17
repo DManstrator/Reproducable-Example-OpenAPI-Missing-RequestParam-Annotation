@@ -16,13 +16,8 @@ public class MissingAnnotationExampleController implements MissingAnnotationExam
 
 
     @Override
-    public ResponseEntity<MyObject> findObjectByCustomVersion(SemanticVersion version) {
-        final MyObject myObject;
-        if (version.getPatch() == null && version.getMinor() == null && version.getMajor() == null)
-            myObject = new MyObject().title("All version attributes are null.");
-        else {
-            myObject = new MyObject().title("Version is valid.");
-        }
+    public ResponseEntity<MyObject> findObjectByCustomVersionInQuery(SemanticVersion version) {
+        final MyObject myObject = createObjectFromSemanticVersion(version);
         return ResponseEntity.ok(myObject);
     }
 
@@ -42,6 +37,23 @@ public class MissingAnnotationExampleController implements MissingAnnotationExam
         final MyObject myObject = new MyObject()
                 .title("Found fixed version: " + version.getValue());
         return ResponseEntity.ok(myObject);
+    }
+
+    @Override
+    public ResponseEntity<MyObject> findObjectByCustomVersionInPath(SemanticVersion version) {
+        final MyObject myObject = createObjectFromSemanticVersion(version);
+        return ResponseEntity.ok(myObject);
+    }
+
+    private MyObject createObjectFromSemanticVersion(SemanticVersion version) {
+        final MyObject myObject;
+        if (version.getPatch() == null && version.getMinor() == null && version.getMajor() == null)
+            myObject = new MyObject().title("All version attributes are null.");
+        else {
+            myObject = new MyObject().title("Version was properly converted.");
+        }
+
+        return myObject;
     }
 
 }
